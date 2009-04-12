@@ -1,0 +1,116 @@
+<html>
+<body>
+<style>
+TD
+{
+	COLOR: #333333;
+	FONT-FAMILY: Arial, Helvetica;
+	FONT-SIZE: 13px;
+	FONT-STYLE: normal;
+	FONT-WEIGHT: normal;
+	TEXT-DECORATION: none;
+}
+</style>	
+<table border="0" width="600">
+	<tr><td bgcolor="#ffffff"><h1>JobCentral Jobs - via XML</h1></td></tr>
+</table>
+<form name="thisForm" method="POST" action="/index.asp">
+<table border="0" width="600" cellpadding="2" cellspacing="0" bgcolor="#CCCCCC">
+<tr><td>
+	<table border="0" width="600" cellpadding="1" cellspacing="1">
+	<tr>
+
+		<td bgcolor="#ffffff"><b>Search the XML Feed Database</b></td>
+	</tr>
+	<tr>
+		<td bgcolor="#ffffff">Company Names (separate multiple names by commas):<br><input type="text" name="company" value="" size="60"></td>
+	</tr>
+	<tr>
+		<td bgcolor="#ffffff">Employer Type: <br><select name="emptype"><option value="">--All Types--</option><option value="0">Direct Employer</option><option value="1">Staffing Firm</option></select></td>
+
+	</tr>
+	<tr>
+		<td bgcolor="#ffffff">Industry:<br>
+			<select name="industry">
+			<option value="">All Industries</option>
+				<option value="1">Aerospace / Defense</option>
+				<option value="2">Automotive / Transport</option>
+
+				<option value="3">Banking</option>
+				<option value="4">Chemicals</option>
+				<option value="5">Computer Hardware</option>
+				<option value="6">Computer Software</option>
+				<option value="7">Conglomerates</option>
+				<option value="8">Consumer Products</option>
+
+				<option value="10">Diversified Services</option>
+				<option value="11">Drugs / Pharmaceuticals</option>
+				<option value="30">Education/Higher Education</option>
+				<option value="12">Electronics & Misc. Tech.</option>
+				<option value="13">Energy</option>
+				<option value="14">Financial Services</option>
+
+				<option value="15">Food, Beverage & Tobacco</option>
+				<option value="17">Health Products & Services</option>
+				<option value="16">Hospital / Healthcare</option>
+				<option value="18">Insurance</option>
+				<option value="19">Leisure</option>
+
+				<option value="20">Manufacturing</option>
+				<option value="21">Materials & Construction</option>
+				<option value="22">Media / Publishing</option>
+				<option value="23">Metals & Mining</option>
+				<option value="24">Real Estate</option>
+
+				<option value="25">Retail</option>
+				<option value="27">Telecommunications</option>
+				<option value="28">Transportation</option>
+				<option value="29">Utilities</option>
+			</select>
+		</td>
+	</tr>
+
+	<tr>
+		<td bgcolor="#ffffff">Company Class:<br>
+			<select name="member">
+				<option value="all">--All Companies--</option>
+				<option value="member">DE Member Companies</option>
+				<option value="nonmember">DE Non Member Companies</option>
+			</select>
+
+		</td>
+	</tr>
+	<tr>
+		<td bgcolor="#ffffff"><input type="submit" value="Search" name="submit"></td>
+	</tr>
+	</table>
+</td></tr>
+</table>
+</form>
+<hr>
+<table border="0" width="600">
+
+<tr><td align="center"><font size="+2"><a href="/feeds/jobcentral.xsd">Click here to view the XML Schema</a></font></td></tr>
+</table>
+<table border="0" width="600">
+<!--SELECT DISTINCT WrappingCompanyName, Company FROM [JobWrappingJobs] JWJ (nolock) JOIN [WrappingCompanies] WC (nolock) ON JWJ.Company = WC.WrappingCompanyNameShort ORDER BY Company-->
+<tr>
+	<td colspan="5"><b>SEARCH CRITERIA</b><br>You performed an open search</b></td>
+</tr>
+<tr>
+	<td width="220"><b>Company</b></td>
+	<td width="130"><b>File Name</b></td>
+
+	<td width="100"><b>File Size</b></td>
+	<td width="150"><b>Date Updated</b></td>
+</tr>
+		<tr>
+			<td>1105 Media, Inc.</td>
+			<td><a href="/feeds/1105media.xml">1105media.xml</a></td>
+			<td>15 KB</td>
+
+			<td>4/12/2009 5:59:01 AM</td>
+		</tr>
+<hr>
+</body>
+</html>
