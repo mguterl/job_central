@@ -1,6 +1,6 @@
 = job_central
 
-Description goes here.
+Ruby library for fetching employers and their respective jobs from JobCentral.
 
 == Copyright
 
