@@ -1,9 +1,14 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
+__DIR__ = File.dirname(__FILE__)
+
+FakeWeb.register_uri(:get, JobCentral::BASE_URI + "/index.asp",
+                     :string => File.read(__DIR__ + "/fixtures/employers.html"))
+FakeWeb.register_uri(:get, JobCentral::BASE_URI + "/feeds/1105media.xml",
+                     :string => File.read(__DIR__ + "/fixtures/jobs.xml"))
+
 describe JobCentral do
   before(:each) do
-    JobCentral::Employer.stub!(:read).
-      and_return(File.read(File.dirname(__FILE__) + "/fixtures/employers.html"))
     @employers = JobCentral::Employer.all
   end
   
@@ -14,8 +19,6 @@ describe JobCentral do
   describe JobCentral::Employer do
     before(:each) do
       @media = @employers.first
-      @media.stub!(:read_jobs).
-        and_return(File.read(File.dirname(__FILE__) + "/fixtures/jobs.xml"))
     end
     
     it "should have attributes parsed from the html" do
@@ -28,11 +31,11 @@ describe JobCentral do
     end
 
     it "should read the html from job central" do
-      JobCentral::Employer.read.should == File.read(File.dirname(__FILE__) + "/fixtures/employers.html")
+      JobCentral::Employer.read.should == File.read(__DIR__ + "/fixtures/employers.html")
     end
 
     it "should read the xml feed of jobs" do
-      @media.read_jobs.should == File.read(File.dirname(__FILE__) + "/fixtures/jobs.xml")
+      @media.read_jobs.should == File.read(__DIR__ + "/fixtures/jobs.xml")
     end
 
     describe JobCentral::Job do
