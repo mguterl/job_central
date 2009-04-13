@@ -9,6 +9,7 @@ begin
     gem.email = "mguterl@gmail.com"
     gem.homepage = "http://github.com/mguterl/job_central"
     gem.authors = ["Michael Guterl"]
+    gem.add_dependency("nokogiri", "~> 1.2.3")
 
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
