@@ -2,6 +2,21 @@
 
 Ruby library for fetching employers and their respective jobs from JobCentral.
 
+== Synopsis
+
+require 'job_central'
+employers = JobCentral::Employer.all
+employer = employers.first
+job = employer.jobs.first
+
+employer.name      # => "1105 Media, Inc."
+job.title          # => "New Products Writer"
+job.industries     # => ["Media / Publishing"]
+
+== Requirements
+
+* nokogiri
+
 == Copyright
 
 Copyright (c) 2009 Michael Guterl. See LICENSE for details.
