@@ -33,7 +33,7 @@ class JobCentral
     end
     
     def read_jobs
-      read file_uri
+      open(file_uri).read
     end
 
     def xml
