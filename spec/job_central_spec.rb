@@ -16,6 +16,11 @@ describe JobCentral do
     @employers.should respond_to(:each)
   end
 
+  it "should parse the format from the feed" do
+    JobCentral.parse_date("4/12/2009 5:59:01 AM").
+      should == DateTime.new(2009, 4, 12, 5, 59, 1)
+  end
+
   describe JobCentral::Employer do
     before(:each) do
       @media = @employers.first
@@ -26,7 +31,7 @@ describe JobCentral do
       @media.name.should == "1105 Media, Inc."
       @media.file_uri.should == "#{JobCentral::BASE_URI}/feeds/1105media.xml"
       @media.file_size.should == "15 KB"
-      @media.date_updated.should == Time.mktime(2009, 4, 12, 5, 59, 01)
+      @media.date_updated.should == DateTime.new(2009, 4, 12, 5, 59, 1)
       @media.jobs.should respond_to(:each)
     end
 

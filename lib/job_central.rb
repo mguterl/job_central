@@ -1,10 +1,16 @@
 require 'rubygems'
 require 'time'
+require 'date'
 require 'open-uri'
 require 'nokogiri'
 
 class JobCentral
   BASE_URI = "http://xmlfeed.jobcentral.com"
+  DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
+  
+  def self.parse_date(date)
+    DateTime.strptime(date, DATE_FORMAT)
+  end
   
   class Employer < Struct.new(:name, :file_uri, :file_size, :date_updated, :jobs)
     def self.all
@@ -17,7 +23,7 @@ class JobCentral
         employer.name = attributes[0].text
         employer.file_uri = BASE_URI + (attributes[1]/"a").attr('href')
         employer.file_size = attributes[2].text
-        employer.date_updated = Time.parse attributes[3].text
+        employer.date_updated = JobCentral.parse_date(attributes[3].text)
 
         @employers << employer
       end
@@ -39,7 +45,7 @@ class JobCentral
     def xml
       Nokogiri::XML read_jobs
     end
-    
+
     def jobs
       @jobs = []
       
