@@ -15,8 +15,10 @@ class JobCentral
   class Employer < Struct.new(:name, :file_uri, :file_size, :date_updated, :jobs)
     def self.all
       @employers = []
-      ((html/"table")[-1]/"tr").each_with_index do |element, idx|
-        next unless idx >= 2
+      employer_rows = ((html/"table")[-1]/"tr")
+      
+      employer_rows.each_with_index do |element, idx|
+        next unless idx >= 2 # skip header rows
         attributes = element/"td"
         
         employer = Employer.new
@@ -62,6 +64,7 @@ class JobCentral
         element.css("industry").each do |industry|
           job.industries << industry.text
         end
+        
         @jobs << job
       end
 
