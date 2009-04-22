@@ -61,6 +61,7 @@ class JobCentral
         job.expiration_date = Date.parse(element.at("expiration_date").text)
         job.employer_name = element.at("employer").text
         job.location = element.at("location").text
+        job.city, job.state = job.location.split(", ")
         element.css("industry").each do |industry|
           job.industries << industry.text
         end
@@ -72,7 +73,7 @@ class JobCentral
     end
   end
 
-  class Job < Struct.new(:guid, :title, :description, :link, :imagelink, :industries, :expiration_date, :employer_name, :location)
+  class Job < Struct.new(:guid, :title, :description, :link, :imagelink, :industries, :expiration_date, :employer_name, :location, :city, :state)
     def industries
       @industries ||= []
     end

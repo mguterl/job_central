@@ -58,6 +58,8 @@ describe JobCentral do
         @writer.expiration_date.should == Date.new(2009, 4, 16)
         @writer.employer_name.should == "1105 Media, Inc."
         @writer.location.should == "Dallas, TX, 75219, USA"
+        @writer.city.should == "Dallas"
+        @writer.state.should == "TX"
       end
     end
   end
