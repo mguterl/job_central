@@ -6,7 +6,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "job_central"
-    gem.summary = %Q{TODO}
+    gem.summary = %Q{}
     gem.email = "mguterl@gmail.com"
     gem.homepage = "http://github.com/mguterl/job_central"
     gem.authors = ["Michael Guterl"]
