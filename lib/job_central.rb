@@ -49,8 +49,15 @@ class JobCentral
     end
 
     def jobs
-      @jobs = []
-      
+      @jobs = Job.from_xml(file_uri)
+    end
+  end
+
+  class Job < Struct.new(:guid, :title, :description, :link, :imagelink, :industries, :expiration_date, :employer_name, :location, :city, :state)
+
+    def self.from_xml(uri)
+      xml = Nokogiri::XML open(uri)
+      jobs = []
       (xml/"job").each do |element|
         job = Job.new
         job.guid = element.at("guid").text
@@ -65,15 +72,11 @@ class JobCentral
         element.css("industry").each do |industry|
           job.industries << industry.text
         end
-        
-        @jobs << job
+        jobs << job
       end
-
-      @jobs
+      jobs
     end
-  end
-
-  class Job < Struct.new(:guid, :title, :description, :link, :imagelink, :industries, :expiration_date, :employer_name, :location, :city, :state)
+    
     def industries
       @industries ||= []
     end

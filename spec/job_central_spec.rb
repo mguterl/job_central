@@ -44,6 +44,27 @@ describe JobCentral do
     end
 
     describe JobCentral::Job do
+      describe "from xml" do
+        before(:each) do
+          @jobs = JobCentral::Job.from_xml(JobCentral::BASE_URI + "/feeds/1105media.xml")
+          @writer = @jobs.first
+        end
+
+        it "should have attributes parsed from the xml" do
+          @writer.guid.should == "1105media-24064"
+          @writer.title.should == "New Products Writer"
+          @writer.description.should == JOB_DESCRIPTION # check eof
+          @writer.link.should == "http://jcnlx.com/3eca112f27834df8b7dbd803d6ecf097105"
+          @writer.imagelink.should == "http://images.jobcentral.com/companylogos/1105media.gif"
+          @writer.industries.should == ["Media / Publishing"]
+          @writer.expiration_date.should == Date.new(2009, 4, 16)
+          @writer.employer_name.should == "1105 Media, Inc."
+          @writer.location.should == "Dallas, TX, 75219, USA"
+          @writer.city.should == "Dallas"
+          @writer.state.should == "TX"
+        end
+      end
+      
       before(:each) do
         @writer = @media.jobs.first
       end
