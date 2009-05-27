@@ -14,7 +14,16 @@ class JobCentral
   
   class Employer < Struct.new(:name, :file_uri, :file_size, :date_updated, :jobs)
     def self.all
+      parse(BASE_URI + "/index.asp")
+    end
+
+    def self.members
+      parse(BASE_URI + "/index.asp?member=member")
+    end
+
+    def self.parse(uri)
       @employers = []
+      html = Nokogiri::HTML open(uri)
       employer_rows = ((html/"table")[-1]/"tr")
       
       employer_rows.each_with_index do |element, idx|
