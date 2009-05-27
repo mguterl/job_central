@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{job_central}
-  s.version = "1.0.2"
+  s.version = "1.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Michael Guterl"]
@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.2}
-  s.summary = %q{TODO}
+  s.summary = %q{}
   s.test_files = [
     "spec/job_central_spec.rb",
      "spec/spec_helper.rb"
