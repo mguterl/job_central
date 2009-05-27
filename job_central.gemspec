@@ -2,36 +2,39 @@
 
 Gem::Specification.new do |s|
   s.name = %q{job_central}
-  s.version = "1.0.1"
+  s.version = "1.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Michael Guterl"]
-  s.date = %q{2009-04-22}
+  s.date = %q{2009-05-27}
   s.email = %q{mguterl@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
-    "README.rdoc"
+     "README.rdoc"
   ]
   s.files = [
-    "LICENSE",
-    "README.rdoc",
-    "Rakefile",
-    "VERSION.yml",
-    "lib/job_central.rb",
-    "spec/fixtures/employers.html",
-    "spec/fixtures/jobs.xml",
-    "spec/job_central_spec.rb",
-    "spec/spec_helper.rb"
+    ".document",
+     ".gitignore",
+     "LICENSE",
+     "README.rdoc",
+     "Rakefile",
+     "VERSION.yml",
+     "job_central.gemspec",
+     "lib/job_central.rb",
+     "spec/fixtures/employers.html",
+     "spec/fixtures/jobs.xml",
+     "spec/job_central_spec.rb",
+     "spec/spec_helper.rb"
   ]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/mguterl/job_central}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.2}
-  s.summary = %q{todo}
+  s.summary = %q{TODO}
   s.test_files = [
     "spec/job_central_spec.rb",
-    "spec/spec_helper.rb"
+     "spec/spec_helper.rb"
   ]
 
   if s.respond_to? :specification_version then
