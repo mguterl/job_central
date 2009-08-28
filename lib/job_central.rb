@@ -12,7 +12,11 @@ class JobCentral
     DateTime.strptime(date, DATE_FORMAT)
   end
   
-  class Employer < Struct.new(:name, :file_uri, :file_size, :date_updated, :jobs)
+  class Employer < Struct.new(:name, :date_updated, :jobs)
+    def feeds
+      @feeds ||= []
+    end
+    
     def self.all
       parse(BASE_URI + "/index.asp")
     end
@@ -22,43 +26,32 @@ class JobCentral
     end
 
     def self.parse(uri)
-      @employers = []
       html = Nokogiri::HTML open(uri)
       employer_rows = ((html/"table")[-1]/"tr")
+      employer_hash = Hash.new { |h, k| h[k] = Employer.new }
       
       employer_rows.each_with_index do |element, idx|
         next unless idx >= 2 # skip header rows
         attributes = element/"td"
-        
-        employer = Employer.new
-        employer.name = attributes[0].text
-        employer.file_uri = BASE_URI + (attributes[1]/"a").attr('href')
-        employer.file_size = attributes[2].text
-        employer.date_updated = JobCentral.parse_date(attributes[3].text)
+        name = attributes[0].text
 
-        @employers << employer
+        employer = employer_hash[name]
+        employer.name = name
+        employer.date_updated = [employer.date_updated, JobCentral.parse_date(attributes[3].text)].compact.max
+        employer.feeds << BASE_URI + (attributes[1]/"a").attr('href')
+
       end
-      @employers
+      @employers = employer_hash.values
     end
 
     def self.read(uri = BASE_URI + "/index.asp")
       open(uri).read
     end
 
-    def self.html
-      Nokogiri::HTML read
-    end
-    
-    def read_jobs
-      open(file_uri).read
-    end
-
-    def xml
-      Nokogiri::XML read_jobs
-    end
-
     def jobs
-      @jobs = Job.from_xml(file_uri)
+      @jobs = feeds.map do |feed|
+        Job.from_xml(feed)
+      end.flatten
     end
   end
 

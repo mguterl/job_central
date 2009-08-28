@@ -3,9 +3,11 @@ require File.dirname(__FILE__) + '/spec_helper'
 __DIR__ = File.dirname(__FILE__)
 
 FakeWeb.register_uri(:get, JobCentral::BASE_URI + "/index.asp",
-                     :string => File.read(__DIR__ + "/fixtures/employers.html"))
+                     :body => File.read(__DIR__ + "/fixtures/employers.html"))
 FakeWeb.register_uri(:get, JobCentral::BASE_URI + "/feeds/1105media.xml",
-                     :string => File.read(__DIR__ + "/fixtures/jobs.xml"))
+                     :body => File.read(__DIR__ + "/fixtures/1105media.xml"))
+FakeWeb.register_uri(:get, JobCentral::BASE_URI + "/feeds/1105media-2.xml",
+                     :body => File.read(__DIR__ + "/fixtures/1105media-2.xml"))
 
 describe JobCentral do
   before(:each) do
@@ -29,18 +31,14 @@ describe JobCentral do
     it "should have attributes parsed from the html" do
       @media.should_not be_nil
       @media.name.should == "1105 Media, Inc."
-      @media.file_uri.should == "#{JobCentral::BASE_URI}/feeds/1105media.xml"
-      @media.file_size.should == "15 KB"
-      @media.date_updated.should == DateTime.new(2009, 4, 12, 5, 59, 1)
+      @media.feeds.should == ["#{JobCentral::BASE_URI}/feeds/1105media.xml", "#{JobCentral::BASE_URI}/feeds/1105media-2.xml"]
+      @media.date_updated.should == DateTime.new(2009, 4, 12, 5, 59, 2)
       @media.jobs.should respond_to(:each)
+      @media.jobs.size.should == 12 # should span across both feeds
     end
 
     it "should read the html from job central" do
       JobCentral::Employer.read.should == File.read(__DIR__ + "/fixtures/employers.html")
-    end
-
-    it "should read the xml feed of jobs" do
-      @media.read_jobs.should == File.read(__DIR__ + "/fixtures/jobs.xml")
     end
 
     describe JobCentral::Job do
