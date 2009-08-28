@@ -12,7 +12,7 @@ class JobCentral
     DateTime.strptime(date, DATE_FORMAT)
   end
   
-  class Employer < Struct.new(:name, :date_updated, :jobs)
+  class Employer < Struct.new(:name, :date_updated)
     def feeds
       @feeds ||= []
     end
@@ -49,7 +49,7 @@ class JobCentral
     end
 
     def jobs
-      @jobs = feeds.map do |feed|
+      feeds.map do |feed|
         Job.from_xml(feed)
       end.flatten
     end
