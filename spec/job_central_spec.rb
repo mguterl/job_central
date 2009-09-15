@@ -42,6 +42,46 @@ describe JobCentral do
     end
 
     describe JobCentral::Job do
+      describe "extract city" do
+        it "should extract the city when possible" do
+          JobCentral::Job.extract_city("Dallas, TX, 75219, USA").should == "Dallas"
+        end
+
+        it "should return nil when ambiguous" do
+          JobCentral::Job.extract_city("Darfur, SDN").should == nil
+        end
+      end
+
+      describe "extract state" do
+        it "should extract the state when possible" do
+          JobCentral::Job.extract_state("Dallas, TX, 75219, USA").should == "TX"
+        end
+        
+        it "should use first element as state when ambiguous" do
+          JobCentral::Job.extract_state("Darfur, SDN").should == "Darfur"
+        end
+      end
+
+      describe "extract zip code" do
+        it "should extract the zip code when possible" do
+          JobCentral::Job.extract_zip_code("Dallas, TX, 75219, USA").should == "75219"
+        end
+
+        it "should return nil when ambiguous" do
+          JobCentral::Job.extract_zip_code("Darfur, SDN").should == nil
+        end
+      end
+
+      describe "extract country" do
+        it "should extract the country when possible" do
+          JobCentral::Job.extract_country("Dallas, TX, 75219, USA").should == "USA"
+        end
+
+        it "should use the last element as country when ambiguous" do
+          JobCentral::Job.extract_country("Darfur, SDN").should == "SDN"
+        end
+      end
+      
       describe "from xml" do
         before(:each) do
           @jobs = JobCentral::Job.from_xml(JobCentral::BASE_URI + "/feeds/1105media.xml")
@@ -61,6 +101,7 @@ describe JobCentral do
           @writer.city.should == "Dallas"
           @writer.state.should == "TX"
           @writer.zip_code.should == "75219"
+          @writer.country.should == "USA"
         end
       end
       
@@ -81,6 +122,7 @@ describe JobCentral do
         @writer.city.should == "Dallas"
         @writer.state.should == "TX"
         @writer.zip_code.should == "75219"
+        @writer.country.should == "USA"
       end
     end
   end

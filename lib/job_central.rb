@@ -54,11 +54,33 @@ class JobCentral
       end.flatten
     end
   end
-
+  
   class Job < Struct.new(:guid, :title, :description, :link, :imagelink,
                          :industries, :expiration_date, :employer_name,
-                         :location, :city, :state, :zip_code)
+                         :location, :city, :state, :zip_code, :country)
+    
+    def self.extract_city(location)
+      details = location.split(", ")
+      details[0] unless details.size != 4
+    end
 
+    def self.extract_state(location)
+      details = location.split(", ")
+      if details.size == 4
+        details[1]
+      else
+        details[0]
+      end
+    end
+
+    def self.extract_zip_code(location)
+      location.split(", ")[2]
+    end
+
+    def self.extract_country(location)
+      location.split(", ")[-1]
+    end
+    
     def self.from_xml(uri)
       xml = Nokogiri::XML open(uri)
       jobs = []
@@ -72,7 +94,7 @@ class JobCentral
         job.expiration_date = Date.parse(element.at("expiration_date").text)
         job.employer_name = element.at("employer").text
         job.location = element.at("location").text
-        job.city, job.state, job.zip_code = job.location.split(", ")
+        job.city, job.state, job.zip_code, job.country = job.location.split(", ")
         element.css("industry").each do |industry|
           job.industries << industry.text
         end
