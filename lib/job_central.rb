@@ -94,7 +94,10 @@ class JobCentral
         job.expiration_date = Date.parse(element.at("expiration_date").text)
         job.employer_name = element.at("employer").text
         job.location = element.at("location").text
-        job.city, job.state, job.zip_code, job.country = job.location.split(", ")
+        job.city = extract_city job.location
+        job.state = extract_state job.location
+        job.zip_code = extract_zip_code job.location
+        job.country = extract_country job.location
         element.css("industry").each do |industry|
           job.industries << industry.text
         end
