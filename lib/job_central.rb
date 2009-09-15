@@ -55,7 +55,9 @@ class JobCentral
     end
   end
 
-  class Job < Struct.new(:guid, :title, :description, :link, :imagelink, :industries, :expiration_date, :employer_name, :location, :city, :state)
+  class Job < Struct.new(:guid, :title, :description, :link, :imagelink,
+                         :industries, :expiration_date, :employer_name,
+                         :location, :city, :state, :zip_code)
 
     def self.from_xml(uri)
       xml = Nokogiri::XML open(uri)
@@ -70,7 +72,7 @@ class JobCentral
         job.expiration_date = Date.parse(element.at("expiration_date").text)
         job.employer_name = element.at("employer").text
         job.location = element.at("location").text
-        job.city, job.state = job.location.split(", ")
+        job.city, job.state, job.zip_code = job.location.split(", ")
         element.css("industry").each do |industry|
           job.industries << industry.text
         end

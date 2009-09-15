@@ -60,6 +60,7 @@ describe JobCentral do
           @writer.location.should == "Dallas, TX, 75219, USA"
           @writer.city.should == "Dallas"
           @writer.state.should == "TX"
+          @writer.zip_code.should == "75219"
         end
       end
       
@@ -79,6 +80,7 @@ describe JobCentral do
         @writer.location.should == "Dallas, TX, 75219, USA"
         @writer.city.should == "Dallas"
         @writer.state.should == "TX"
+        @writer.zip_code.should == "75219"
       end
     end
   end
