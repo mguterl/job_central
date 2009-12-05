@@ -7,16 +7,16 @@ require 'nokogiri'
 class JobCentral
   BASE_URI = "http://xmlfeed.jobcentral.com"
   DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
-  
+
   def self.parse_date(date)
     DateTime.strptime(date, DATE_FORMAT)
   end
-  
+
   class Employer < Struct.new(:name, :date_updated)
     def feeds
       @feeds ||= []
     end
-    
+
     def self.all
       parse(BASE_URI + "/index.asp")
     end
@@ -29,7 +29,7 @@ class JobCentral
       html = Nokogiri::HTML open(uri)
       employer_rows = ((html/"table")[-1]/"tr")
       employer_hash = Hash.new { |h, k| h[k] = Employer.new }
-      
+
       employer_rows.each_with_index do |element, idx|
         next unless idx >= 2 # skip header rows
         attributes = element/"td"
@@ -54,37 +54,17 @@ class JobCentral
       end.flatten
     end
   end
-  
+
   class Job < Struct.new(:guid, :title, :description, :link, :imagelink,
                          :industries, :expiration_date, :employer_name,
                          :location, :city, :state, :zip_code, :country)
-    
-    def self.extract_city(location)
-      details = location.split(", ")
-      details[0] unless details.size != 4
-    end
 
-    def self.extract_state(location)
-      details = location.split(", ")
-      if details.size == 4
-        details[1]
-      else
-        details[0]
-      end
-    end
-
-    def self.extract_zip_code(location)
-      location.split(", ")[2]
-    end
-
-    def self.extract_country(location)
-      location.split(", ")[-1]
-    end
-    
     def self.from_xml(uri)
       xml = Nokogiri::XML open(uri)
       jobs = []
       (xml/"job").each do |element|
+        location = element.at("location").text
+        parsed_location = LocationParser.parse(location)
         job = Job.new
         job.guid = element.at("guid").text
         job.title = element.at("title").text
@@ -93,11 +73,11 @@ class JobCentral
         job.imagelink = element.at("imagelink").text
         job.expiration_date = Date.parse(element.at("expiration_date").text)
         job.employer_name = element.at("employer").text
-        job.location = element.at("location").text
-        job.city = extract_city job.location
-        job.state = extract_state job.location
-        job.zip_code = extract_zip_code job.location
-        job.country = extract_country job.location
+        job.location = location
+        job.city = parsed_location[:city]
+        job.state = parsed_location[:state]
+        job.zip_code = parsed_location[:zip_code]
+        job.country = parsed_location[:country]
         element.css("industry").each do |industry|
           job.industries << industry.text
         end
@@ -105,9 +85,49 @@ class JobCentral
       end
       jobs
     end
-    
+
     def industries
       @industries ||= []
+    end
+  end
+
+  class LocationParser
+    def self.parse(string)
+      parser = new
+      parser.parse(string)
+    end
+
+    def parse(string)
+      pieces = string.split(', ')
+      case pieces.size
+      when 4
+        {
+          :city     => parse_piece(pieces[0]),
+          :state    => parse_piece(pieces[1]),
+          :zip_code => parse_piece(pieces[2]),
+          :country  => parse_piece(pieces[3])
+        }
+      when 3
+        {
+          :city     => parse_piece(pieces[0]),
+          :state    => parse_piece(pieces[1]),
+          :zip_code => nil,
+          :country  => parse_piece(pieces[2])
+        }
+      when 2
+        {
+          :city     => nil,
+          :state    => parse_piece(pieces[0]),
+          :zip_code => nil,
+          :country  => parse_piece(pieces[1])
+        }
+      end
+    end
+
+    private
+    def parse_piece(piece)
+      return nil if piece.empty?
+      piece
     end
   end
 end

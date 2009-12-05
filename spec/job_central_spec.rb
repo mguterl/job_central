@@ -13,7 +13,7 @@ describe JobCentral do
   before(:each) do
     @employers = JobCentral::Employer.all
   end
-  
+
   it "should fetch the list of employers" do
     @employers.should respond_to(:each)
   end
@@ -27,7 +27,7 @@ describe JobCentral do
     before(:each) do
       @media = @employers.first
     end
-    
+
     it "should have attributes parsed from the html" do
       @media.should_not be_nil
       @media.name.should == "1105 Media, Inc."
@@ -42,46 +42,6 @@ describe JobCentral do
     end
 
     describe JobCentral::Job do
-      describe "extract city" do
-        it "should extract the city when possible" do
-          JobCentral::Job.extract_city("Dallas, TX, 75219, USA").should == "Dallas"
-        end
-
-        it "should return nil when ambiguous" do
-          JobCentral::Job.extract_city("Darfur, SDN").should == nil
-        end
-      end
-
-      describe "extract state" do
-        it "should extract the state when possible" do
-          JobCentral::Job.extract_state("Dallas, TX, 75219, USA").should == "TX"
-        end
-        
-        it "should use first element as state when ambiguous" do
-          JobCentral::Job.extract_state("Darfur, SDN").should == "Darfur"
-        end
-      end
-
-      describe "extract zip code" do
-        it "should extract the zip code when possible" do
-          JobCentral::Job.extract_zip_code("Dallas, TX, 75219, USA").should == "75219"
-        end
-
-        it "should return nil when ambiguous" do
-          JobCentral::Job.extract_zip_code("Darfur, SDN").should == nil
-        end
-      end
-
-      describe "extract country" do
-        it "should extract the country when possible" do
-          JobCentral::Job.extract_country("Dallas, TX, 75219, USA").should == "USA"
-        end
-
-        it "should use the last element as country when ambiguous" do
-          JobCentral::Job.extract_country("Darfur, SDN").should == "SDN"
-        end
-      end
-      
       describe "from xml" do
         before(:each) do
           @jobs = JobCentral::Job.from_xml(JobCentral::BASE_URI + "/feeds/1105media.xml")
@@ -104,11 +64,11 @@ describe JobCentral do
           @writer.country.should == "USA"
         end
       end
-      
+
       before(:each) do
         @writer = @media.jobs.first
       end
-      
+
       it "should have attributes parsed from the xml" do
         @writer.guid.should == "1105media-24064"
         @writer.title.should == "New Products Writer"
@@ -124,6 +84,37 @@ describe JobCentral do
         @writer.zip_code.should == "75219"
         @writer.country.should == "USA"
       end
+    end
+  end
+  { "Dallas, TX, 75219, USA" => {
+      :city => "Dallas",
+      :state => "TX",
+      :zip_code => "75219",
+      :country => "USA"
+    }, "Darfur, SDN" => {
+      :city => nil,
+      :state => "Darfur",
+      :zip_code => nil,
+      :country => "SDN"
+    }, ", USA" => {
+      :city => nil,
+      :state => nil,
+      :zip_code => nil,
+      :country => "USA"
+    }, "US, DC, USA" => {
+      :city => "US",
+      :state => "DC",
+      :zip_code => nil,
+      :country => "USA"
+    }, ", GA, USA" => {
+      :city => nil,
+      :state => "GA",
+      :zip_code => nil,
+      :country => "USA"
+    }
+  }.each do |string, location|
+    it 'should parse #{string}' do
+      JobCentral::LocationParser.parse(string).should == location
     end
   end
 end
