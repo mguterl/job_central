@@ -41,7 +41,9 @@ class JobCentral
         employer.feeds << BASE_URI + (attributes[1]/"a").attr('href')
 
       end
-      @employers = employer_hash.values
+      employers = employer_hash.values
+      employers.extend Finders
+      employers
     end
 
     def self.read(uri = BASE_URI + "/index.asp")
@@ -52,6 +54,12 @@ class JobCentral
       feeds.map do |feed|
         Job.from_xml(feed)
       end.flatten
+    end
+  end
+
+  module Finders
+    def find_by_name(*names)
+      select { |employer| names.include?(employer.name) }
     end
   end
 
