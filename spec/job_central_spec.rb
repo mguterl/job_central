@@ -9,42 +9,7 @@ FakeWeb.register_uri(:get, JobCentral::BASE_URI + "/feeds/1105media.xml",
 FakeWeb.register_uri(:get, JobCentral::BASE_URI + "/feeds/1105media-2.xml",
                      :body => File.read(__DIR__ + "/fixtures/1105media-2.xml"))
 
-JOB_DESCRIPTION = <<-EOF
-Job Details
-New Products Writer
-Send Job to Friend &amp;#187;
-Apply Now &amp;#187;
-Location: Dallas, TX
-Department: Editorial
-Job Type: Hire
-Openings: 0 open, out of 1 available
-
-*
-1105 Media is looking for a detail-oriented New Products Writer in its Dallas, Texas office who can write and edit new products for several B2B magazines.
-Position Profile:
-
-As a New Products Writer, you will be responsible for writing 120 to 200 products per month. This requires excellent copyediting and organizational skills and the ability to describe the features and benefits of a product in 80 words or fewer. Occasionally you will be needed to proof articles and pages.
-
-Responsibilities include:
-* Writing 120 to 200 products per month.
-* Copyediting stories and page proofs.
-* Helping the editorial team post products to Web sites.
-* Sending out monthly e-mail blasts for new products.
-* Producing e-newsletters for magazines.
-
-The ideal candidate for this position will possess the following qualifications:
-* At least one year professional experience, preferably in communications or journalism.
-* BA/BS in Journalism/English/Communications or related field of study.
-Experience in the following areas will be considered a plus:
-* HMTL coding
-* B2B publishing
-* Sitecore CMS
-1105 Media is based in Chatsworth,CA, with primary offices throughtout the United States. The company was formed in April 2006 by Nautic Partners LLC, Alta Communications, and President/CEO Neal Vitale.
-We offer a competitive salary and a comprehensive benefits package that includes medical/dental/vision insurance, life insurance, disability insurance, 401(k) plan, and a generous paid time off (PTO)/holiday plan.
-We are an equal opportunity employer.
-Send Job to Friend &amp;#187;
-Apply Now &amp;#187;
-EOF
+JOB_DESCRIPTION = "Job Details\nNew Products Writer\nSend Job to Friend &amp;#187;\nApply Now &amp;#187;\nLocation: Dallas, TX\nDepartment: Editorial\nJob Type: Hire\nOpenings: 0 open, out of 1 available\n\n* \n1105 Media is looking for a detail-oriented New Products Writer in its Dallas, Texas office who can write and edit new products for several B2B magazines.\nPosition Profile:\n\nAs a New Products Writer, you will be responsible for writing 120 to 200 products per month. This requires excellent copyediting and organizational skills and the ability to describe the features and benefits of a product in 80 words or fewer. Occasionally you will be needed to proof articles and pages.\n\nResponsibilities include:\n* Writing 120 to 200 products per month.\n* Copyediting stories and page proofs.\n* Helping the editorial team post products to Web sites.\n* Sending out monthly e-mail blasts for new products.\n* Producing e-newsletters for magazines.\n\nThe ideal candidate for this position will possess the following qualifications:\n* At least one year professional experience, preferably in communications or journalism.\n* BA/BS in Journalism/English/Communications or related field of study.\nExperience in the following areas will be considered a plus:\n* HMTL coding\n* B2B publishing\n* Sitecore CMS\n1105 Media is based in Chatsworth,CA, with primary offices throughtout the United States. The company was formed in April 2006 by Nautic Partners LLC, Alta Communications, and President/CEO Neal Vitale.\nWe offer a competitive salary and a comprehensive benefits package that includes medical/dental/vision insurance, life insurance, disability insurance, 401(k) plan, and a generous paid time off (PTO)/holiday plan.\nWe are an equal opportunity employer.\nSend Job to Friend &amp;#187;\nApply Now &amp;#187;\n"
 
 describe JobCentral do
   before(:each) do
