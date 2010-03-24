@@ -132,7 +132,7 @@ class JobCentral
           :country  => parse_piece(pieces[1])
         }
       else
-        raise JobCentral::ParseError, "could not parse #{string}"
+        {}
       end
     end
 
