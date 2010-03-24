@@ -119,4 +119,10 @@ describe JobCentral do
       JobCentral::LocationParser.parse(string).should == location
     end
   end
+
+  it 'should raise parse error on unknown location formats' do
+    lambda {
+      JobCentral::LocationParser.parse("Farmington Hills, OH, MI, 48332, USA")
+    }.should raise_error(JobCentral::ParseError)
+  end
 end

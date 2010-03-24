@@ -8,6 +8,8 @@ class JobCentral
   BASE_URI = "http://xmlfeed.jobcentral.com"
   DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 
+  ParseError = Class.new(StandardError)
+
   def self.parse_date(date)
     DateTime.strptime(date, DATE_FORMAT)
   end
@@ -129,6 +131,8 @@ class JobCentral
           :zip_code => nil,
           :country  => parse_piece(pieces[1])
         }
+      else
+        raise JobCentral::ParseError, "could not parse #{string}"
       end
     end
 
