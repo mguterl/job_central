@@ -35,7 +35,7 @@ class JobCentral
       employer_rows.each_with_index do |element, idx|
         next unless idx >= 2 # skip header rows
         attributes = element/"td"
-        name = attributes[0].text
+        name = attributes[0].text.strip
 
         employer = employer_hash[name]
         employer.name = name
