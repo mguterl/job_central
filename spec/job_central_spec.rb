@@ -57,7 +57,7 @@ describe JobCentral do
           @writer.link.should == "http://jcnlx.com/3eca112f27834df8b7dbd803d6ecf097105"
           @writer.imagelink.should == "http://images.jobcentral.com/companylogos/1105media.gif"
           @writer.industries.should == ["Media / Publishing"]
-          @writer.expiration_date.should == Time.mktime(2009, 4, 16)
+          @writer.expiration_date.should == Date.new(2009, 4, 16)
           @writer.employer_name.should == "1105 Media, Inc."
           @writer.location.should == "Dallas, TX, 75219, USA"
           @writer.city.should == "Dallas"
@@ -78,7 +78,7 @@ describe JobCentral do
         @writer.link.should == "http://jcnlx.com/3eca112f27834df8b7dbd803d6ecf097105"
         @writer.imagelink.should == "http://images.jobcentral.com/companylogos/1105media.gif"
         @writer.industries.should == ["Media / Publishing"]
-        @writer.expiration_date.should == Time.mktime(2009, 4, 16)
+        @writer.expiration_date.should == Date.new(2009, 4, 16)
         @writer.employer_name.should == "1105 Media, Inc."
         @writer.location.should == "Dallas, TX, 75219, USA"
         @writer.city.should == "Dallas"
