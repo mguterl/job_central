@@ -81,7 +81,7 @@ class JobCentral
         job.description = element.at("description").text
         job.link = element.at("link").text
         job.imagelink = element.at("imagelink").text
-        job.expiration_date = Date.parse(element.at("expiration_date").text)
+        job.expiration_date = Time.parse(element.at("expiration_date").text)
         job.employer_name = element.at("employer").text
         job.location = location
         job.city = parsed_location[:city]
