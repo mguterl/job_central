@@ -48,10 +48,6 @@ class JobCentral
       employers
     end
 
-    def self.read(uri = BASE_URI + "/index.asp")
-      open(uri).read
-    end
-
     def jobs
       feeds.map do |feed|
         Job.from_xml(feed)

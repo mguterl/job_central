@@ -39,10 +39,6 @@ describe JobCentral do
       @media.jobs.size.should == 12 # should span across both feeds
     end
 
-    it "should read the html from job central" do
-      JobCentral::Employer.read.should == File.read(__DIR__ + "/fixtures/employers.html")
-    end
-
     describe JobCentral::Job do
       describe "from xml" do
         before(:each) do
