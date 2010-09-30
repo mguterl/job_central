@@ -30,6 +30,25 @@ describe JobCentral do
       @media = @employers.first
     end
 
+    describe ".parse" do
+
+      let(:error) { OpenURI::HTTPError.new "500 Internal Server Error", "" }
+
+      it 'should retry on errors up to the limit' do
+        Kernel.should_receive(:open).exactly(2).times.and_raise(error)
+        Kernel.should_receive(:open).once.and_return(File.read(__DIR__ + "/fixtures/employers.html"))
+        JobCentral::Employer.parse(JobCentral::BASE_URI + "/index.asp")
+      end
+
+      it 'should retry on errors up to the limit and then raise if over' do
+        Kernel.stub(:open).and_raise(error)
+        expect {
+          JobCentral::Employer.parse(JobCentral::BASE_URI + "/index.asp")
+        }.to raise_error(OpenURI::HTTPError)
+      end
+
+    end
+
     it "should have attributes parsed from the html" do
       @media.should_not be_nil
       @media.name.should == "1105 Media, Inc."
@@ -111,7 +130,7 @@ describe JobCentral do
       :country => "USA"
     }
   }.each do |string, location|
-    it 'should parse #{string}' do
+    it "should parse #{string}" do
       JobCentral::LocationParser.parse(string).should == location
     end
   end

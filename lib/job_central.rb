@@ -15,44 +15,69 @@ class JobCentral
   end
 
   class Employer < Struct.new(:name, :date_updated)
-    def feeds
-      @feeds ||= []
-    end
 
-    def self.all
-      parse(BASE_URI + "/index.asp")
-    end
+    DEFAULT_RETRY_LIMIT = 3
+    RESCUABLE_ERRORS    = [OpenURI::HTTPError].freeze
 
-    def self.members
-      parse(BASE_URI + "/index.asp?member=member")
-    end
+    class << self
 
-    def self.parse(uri)
-      html = Nokogiri::HTML open(uri)
-      employer_rows = ((html/"table")[-1]/"tr")
-      employer_hash = Hash.new { |h, k| h[k] = Employer.new }
-
-      employer_rows.each_with_index do |element, idx|
-        next unless idx >= 2 # skip header rows
-        attributes = element/"td"
-        name = attributes[0].text.strip
-
-        employer = employer_hash[name]
-        employer.name = name
-        employer.date_updated = [employer.date_updated, JobCentral.parse_date(attributes[3].text)].compact.max
-        employer.feeds << BASE_URI + (attributes[1]/"a").attr('href')
-
+      def all
+        parse(BASE_URI + "/index.asp")
       end
-      employers = employer_hash.values
-      employers.extend Finders
-      employers
+
+      def members
+        parse(BASE_URI + "/index.asp?member=member")
+      end
+
+      def parse(uri)
+        html = Nokogiri::HTML open(uri)
+        employer_rows = ((html/"table")[-1]/"tr")
+        employer_hash = Hash.new { |h, k| h[k] = Employer.new }
+
+        employer_rows.each_with_index do |element, idx|
+          next unless idx >= 2 # skip header rows
+          attributes = element/"td"
+          name = attributes[0].text.strip
+
+          employer = employer_hash[name]
+          employer.name = name
+          employer.date_updated = [employer.date_updated, JobCentral.parse_date(attributes[3].text)].compact.max
+          employer.feeds << BASE_URI + (attributes[1]/"a").attr('href')
+
+        end
+        employers = employer_hash.values
+        employers.extend Finders
+        employers
+      end
+
+      def open(*args, &block)
+        Kernel.open(*args, &block)
+      rescue OpenURI::HTTPError => e
+        retries ||= 0
+        if retries < retry_limit
+          retries += 1
+          retry
+        else
+          raise e
+        end
+      end
+
+      attr_accessor :retry_limit
+
     end
+
+    self.retry_limit = DEFAULT_RETRY_LIMIT
 
     def jobs
       feeds.map do |feed|
         Job.from_xml(feed)
       end.flatten
     end
+
+    def feeds
+      @feeds ||= []
+    end
+
   end
 
   module Finders
