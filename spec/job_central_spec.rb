@@ -21,7 +21,7 @@ describe JobCentral do
   end
 
   it "should parse the format from the feed" do
-    JobCentral.parse_date("4/12/2009 5:59:01 AM").
+    JobCentral::Helpers.parse_date("4/12/2009 5:59:01 AM").
       should == DateTime.new(2009, 4, 12, 5, 59, 1)
   end
 

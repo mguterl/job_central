@@ -4,20 +4,44 @@ require 'date'
 require 'open-uri'
 require 'nokogiri'
 
-class JobCentral
-  BASE_URI = "http://xmlfeed.jobcentral.com"
-  DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
+module JobCentral
+
+  BASE_URI = "http://xmlfeed.jobcentral.com".freeze
+
+  DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p".freeze
+
+  DEFAULT_RETRY_LIMIT = 3
+
+  RESCUABLE_ERRORS = [OpenURI::HTTPError].freeze
 
   ParseError = Class.new(StandardError)
 
-  def self.parse_date(date)
-    DateTime.strptime(date, DATE_FORMAT)
+  module Helpers
+
+    extend self
+
+    def parse_date(date)
+      DateTime.strptime(date, DATE_FORMAT)
+    end
+
+    def open(*args, &block)
+      Kernel.open(*args, &block)
+    rescue OpenURI::HTTPError => e
+      retries ||= 0
+      if retries < DEFAULT_RETRY_LIMIT
+        retries += 1
+        retry
+      else
+        raise e
+      end
+    end
+
   end
 
   class Employer < Struct.new(:name, :date_updated)
 
-    DEFAULT_RETRY_LIMIT = 3
-    RESCUABLE_ERRORS    = [OpenURI::HTTPError].freeze
+    include Helpers
+    extend  Helpers
 
     class << self
 
@@ -41,7 +65,7 @@ class JobCentral
 
           employer = employer_hash[name]
           employer.name = name
-          employer.date_updated = [employer.date_updated, JobCentral.parse_date(attributes[3].text)].compact.max
+          employer.date_updated = [employer.date_updated, parse_date(attributes[3].text)].compact.max
           employer.feeds << BASE_URI + (attributes[1]/"a").attr('href')
 
         end
@@ -50,23 +74,7 @@ class JobCentral
         employers
       end
 
-      def open(*args, &block)
-        Kernel.open(*args, &block)
-      rescue OpenURI::HTTPError => e
-        retries ||= 0
-        if retries < retry_limit
-          retries += 1
-          retry
-        else
-          raise e
-        end
-      end
-
-      attr_accessor :retry_limit
-
     end
-
-    self.retry_limit = DEFAULT_RETRY_LIMIT
 
     def jobs
       feeds.map do |feed|
@@ -81,14 +89,19 @@ class JobCentral
   end
 
   module Finders
+
     def find_by_name(*names)
       select { |employer| names.include?(employer.name) }
     end
+
   end
 
   class Job < Struct.new(:guid, :title, :description, :link, :imagelink,
                          :industries, :expiration_date, :employer_name,
                          :location, :city, :state, :zip_code, :country)
+
+    include Helpers
+    extend  Helpers
 
     def self.from_xml(uri)
       xml = Nokogiri::XML open(uri)
