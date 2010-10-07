@@ -107,16 +107,16 @@ module JobCentral
       xml = Nokogiri::XML open(uri)
       jobs = []
       (xml/"job").each do |element|
-        location = element.at("location").text
+        location = extract_text(element, "location")
         parsed_location = LocationParser.parse(location)
         job = Job.new
-        job.guid = element.at("guid").text
-        job.title = element.at("title").text
-        job.description = element.at("description").text
-        job.link = element.at("link").text
-        job.imagelink = element.at("imagelink").text
-        job.expiration_date = Date.parse(element.at("expiration_date").text)
-        job.employer_name = element.at("employer").text
+        job.guid = extract_text(element, "guid")
+        job.title = extract_text(element, "title")
+        job.description = extract_text(element, "description")
+        job.link = extract_text(element, "link")
+        job.imagelink = extract_text(element, "imagelink")
+        job.expiration_date = Date.parse(extract_text(element, "expiration_date"))
+        job.employer_name = extract_text(element, "employer")
         job.location = location
         job.city = parsed_location[:city]
         job.state = parsed_location[:state]
@@ -128,6 +128,11 @@ module JobCentral
         jobs << job
       end
       jobs
+    end
+
+    def self.extract_text(element, tag)
+      element = element.at(tag)
+      element && element.text
     end
 
     def industries
