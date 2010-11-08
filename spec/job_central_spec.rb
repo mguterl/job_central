@@ -59,6 +59,16 @@ describe JobCentral do
     end
 
     describe JobCentral::Job do
+
+      describe "#extract_location" do
+
+        it 'stripgs the location of leading spaces / commas' do
+          element = double("element", :at => double(:text => ", NY, USA"))
+          JobCentral::Job.extract_location(element).should == "NY, USA"
+        end
+
+      end
+
       describe "from xml" do
         before(:each) do
           @jobs = JobCentral::Job.from_xml(JobCentral::BASE_URI + "/feeds/1105media.xml")

@@ -107,7 +107,7 @@ module JobCentral
       xml = Nokogiri::XML open(uri)
       jobs = []
       (xml/"job").each do |element|
-        location = extract_text(element, "location")
+        location = extract_location(element)
         parsed_location = LocationParser.parse(location)
         job = Job.new
         job.guid = extract_text(element, "guid")
@@ -133,6 +133,11 @@ module JobCentral
     def self.extract_text(element, tag)
       element = element.at(tag)
       element && element.text
+    end
+
+    def self.extract_location(element)
+      location = extract_text(element, "location")
+      location.gsub(/^\,\s+/, '')
     end
 
     def industries
