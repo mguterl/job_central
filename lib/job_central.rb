@@ -5,8 +5,19 @@ require 'open-uri'
 require 'nokogiri'
 
 module JobCentral
+  class << self
+    attr_accessor :configuration
+  end
 
-  BASE_URI = "http://xmlfeed.jobcentral.com".freeze
+  def self.configuration
+    @configuration ||= Configuration.new
+  end
+
+  def self.configure
+    yield(configuration)
+  end
+
+  BASE_URI = "https://xmlfeed.directemployers.org".freeze
 
   DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p".freeze
 
@@ -15,6 +26,14 @@ module JobCentral
   RESCUABLE_ERRORS = [OpenURI::HTTPError].freeze
 
   ParseError = Class.new(StandardError)
+
+  class Configuration
+    attr_accessor :auth_token
+
+    def initialize
+      @auth_token = nil
+    end
+  end
 
   module Helpers
 
@@ -66,7 +85,7 @@ module JobCentral
           employer = employer_hash[name]
           employer.name = name
           employer.date_updated = [employer.date_updated, parse_date(attributes[3].text)].compact.max
-          employer.feeds << BASE_URI + (attributes[1]/"a").attr('href')
+          employer.feeds << BASE_URI + (attributes[1]/"a").attr('href') + JobCentral.configuration.auth_token unless JobCentral.configuration.auth_token.nil?
 
         end
         employers = employer_hash.values
